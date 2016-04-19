@@ -17,3 +17,8 @@ body {
 .table-hover tbody tr:hover {
 	color: #222;
 }
+
+#user-preview {
+	width: 250px;
+	height: 150px;
+}
