@@ -1,0 +1,19 @@
+body {
+	background-color: #222;
+	color: #fff;
+}
+
+.well {
+	color: #222;
+}
+
+#main-container {
+	margin-top: 75px;
+}
+
+#my-nav {
+	height: 75px;
+}
+.table-hover tbody tr:hover {
+	color: #222;
+}

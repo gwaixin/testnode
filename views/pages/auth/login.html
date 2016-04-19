@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>LOGIN</title>
+
+	<% include ../../partials/head %>
+	<link rel="stylesheet" href="/css/core.css">
+</head>
+<body>
+	<% include ../../partials/header %>
+	<div id="main-container" class="container">
+		<div class="row">
+			<div class="col-lg-5">
+				<h2>LOGIN</h2>
+				<form id="form-login" method="POST" action="/auth/login" class="well form-horizontal">
+					<div class="form-group">
+						<label for="username" class="col-md-3 control-label">username</label>
+						<div class="col-md-8">
+							<input type="text" name="username" class="form-control" id="username" placeholder="username">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="password" class="col-md-3 control-label">password</label>
+						<div class="col-md-8">
+							<input type="password" name="password" class="form-control" id="password" placeholder="password">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-8 col-md-offset-3">
+							<button type="submit" class="btn btn-primary">Login</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<% include ../../partials/footer %>
+	<!--Page scripts-->
+	<script type="text/javascript" src="/js/pages/auth/login.js"></script>
+</body>
+</html>
