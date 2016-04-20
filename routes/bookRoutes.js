@@ -132,7 +132,7 @@ function createRow(bookData) {
 								"<td class='book-row-description'>"+bookData.description+"</td>" + 
 								"<td class='book-row-author'>"+bookData.author+"</td>" +
 								"<td class='book-row-quantity'>"+bookData.quantity+"</td>" +
-								"<td><button data-book-id="+bookData.id+" class='delete-book btn btn-xs btn-danger'>remove</button>" +
+								"<td><button data-book-id="+bookData.id+" class='delete-book btn btn-xs btn-danger'>remove</button> " +
 								"<button data-book-id="+bookData.id+" class='edit-book btn btn-xs btn-success'>edit</button></td>";
 	return strRow;
 }
