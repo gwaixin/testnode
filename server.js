@@ -1,12 +1,21 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var config = require('./config');
+var session = require('express-session');
 
 var app = express();
+
+// Session
+var sessionOption = session(config.session);
+app.use(sessionOption);
+
 
 // routes
 var books = require('./routes/bookRoutes');
 var auths = require('./routes/authRoutes');
 var user = require('./routes/userRoutes');
+
+app.set('superSecret', config.secret);
 
 app.use('/books', books);
 app.use('/auth', auths);
@@ -77,6 +86,20 @@ global.siteDescription = 'A portal for the collection of your books';
 global.siteCopy = 'Copyright © '+siteTitle+' 2015';
 global.authorName = 'Nichole John Martinez';
 global.authorContact = 'xinmartinez@gmail.com';
+
+
+// app session ini
+var sessionOption = session({
+	genid: function(req) {
+		return genuuid();
+	},
+	secret: 'mybook12345',
+	cookie: {maxAge: 60000},
+	resave: true,
+	saveUninitialized: true
+});
+app.use(sessionOption);
+
 
 app.listen(3000, function() {
 	console.log('Example app listening on port 3000!');
