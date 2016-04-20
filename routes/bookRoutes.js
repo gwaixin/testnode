@@ -111,14 +111,14 @@ router.get('/:id', function(req, res, next) {
 	if (isNaN(id)) {
 		next();
 	} else {
-		models.Book.find({
-			where: {
-				id: id
-			}
-		}).then(function(book) {
+		models.Book.findById(id).then(function(book) {
 			if (book) {
-				// res.send(req.session.authUser);
-				res.render('pages/books/detail', {book:book, user:req.session.authUser, bookPage:'book' + id});
+				models.BookComment.findAll({
+					where: { book_id: book.id },
+					order: [['id', 'DESC' ]]
+				}).then(function(bookComment) {
+					res.render('pages/books/detail', {book:book, user:req.session.authUser, bookComments: bookComment});
+				});
 			} else {
 				res.send('No book found');
 			}
