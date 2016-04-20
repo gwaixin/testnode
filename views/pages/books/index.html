@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Books nimo</title>
+	<title><%=siteTitle%>: Books nimo</title>
 	<% include ../../partials/head %>
 	<link rel="stylesheet" href="/css/core.css">
 </head>
@@ -27,7 +27,7 @@
 						<% books.forEach(function(book) { %>
 							<tr data-book-row="<%=book.id%>">
 								<td class="book-row-id"><%=book.id%></td>
-								<td class="book-row-title"><%=book.title%></td>
+								<td class="book-row-title"><a href="/books/<%=book.id%>"><p><%=book.title%></p></a></td>
 								<td class="book-row-description"><%=book.description%></td>
 								<td class="book-row-author"><%=book.author%></td>
 								<td class="book-row-quantity"><%=book.quantity%></td>

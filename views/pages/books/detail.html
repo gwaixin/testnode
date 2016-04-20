@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%=siteTitle%>: Book Detail</title>
+	<% include ../../partials/head %>
+	<link rel="stylesheet" href="/css/core.css">
+</head>
+<body>
+	<% include ../../partials/books/header %>
+	<div class="container" id="main-container">
+		<div class="row">
+			<div class="col-lg-12">
+				<h2>Book : <%=book.title %></h2>
+				<hr>
+				<div class="row">
+					<div class="col-lg-12 panel panel-primary">
+						<div class="panel-heading"><%=book.author%></div>
+						<div class="panel-body">
+							<p><%=book.description%></p>
+							<small class="pull-right"><%=book.createdAt%></small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<a href="/books">Go back to books</a>
+			</div>
+		</div>
+	</div>
+	<% include ../../partials/footer %>
+</body>
+</html>
