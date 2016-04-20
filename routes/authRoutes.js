@@ -1,30 +1,31 @@
 var express = require('express');
-var router = express.Router();
+var authRoute = express.Router();
 var bodyParser = require('body-parser');
 var models = require('../server/models/');
+var jwt    = require('jsonwebtoken');
+var session = require('express-session');
+var config = require('../config');
 
-router.use(bodyParser.urlencoded({ extended: true }));
+authRoute.use(bodyParser.urlencoded({ extended: true }));
 
 //auth login
-router.get('/login', function(req, res) {
+authRoute.get('/login', function(req, res) {
 		res.render('pages/auth/login');
 });
 
-router.post('/login', function(req, res) {
-		// if (req.body.username == 'admin') {
-		// 	res.json({'result': true});
-		// } else {
-		// 	res.json({'result': false});
-		// }
+authRoute.post('/login', function(req, res) {
 		models.User.find({
 			where: {
 				username: req.body.username,
 				password: req.body.password
 			}
-		}).then(function(result) {
+		}).then(function(user) {
 			var data = {};
-			if (result) {
-				data = {result:true};
+			if (user) {
+				var token = jwt.sign(JSON.stringify(user), 'testing lang', { expiresIn: '60'});
+				req.session.authToken = token;
+				console.log(req.session.authToken);
+				data = {result:true, token: token};
 			} else {
 				data = {result:false};
 			}
@@ -34,11 +35,11 @@ router.post('/login', function(req, res) {
 
 
 // auth register
-router.get('/register', function(req, res) {
+authRoute.get('/register', function(req, res) {
 	res.render('pages/auth/register');
 });
 
-router.post('/register', function(req, res) {
+authRoute.post('/register', function(req, res) {
 	models.User.create({
 		username: req.body.username,
 		password: req.body.password,
@@ -50,4 +51,10 @@ router.post('/register', function(req, res) {
 	});
 });
 
-module.exports = router;
+// Logout
+authRoute.get('/logout', function(req, res) {
+	req.session.authToken = null;
+	res.render('pages/auth/logout');
+});
+
+module.exports = authRoute;
