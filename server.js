@@ -5,6 +5,39 @@ var session = require('express-session');
 
 var app = express();
 
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+var createCommentRow = function(data) {
+	var comment = "<div class='row comment-row'>" +
+		"<div class='col-md-12'>" +
+			"<h5>"+ data.firstname +"</h5>" +
+		"</div>" +
+		"<div class='col-md-2'>" +
+			"<img src='http://placehold.it/120x50' alt=''>" +
+		"</div>" +
+		"<div class='col-md-10'>" +
+			"<p>"+ data.message +"</p>"+
+			"<small class='pull-right'>"+ new Date +"</small>" +
+		"</div>" +
+	"</div>";
+	return comment;
+};
+
+io.on('connection', function(socket) {
+	console.log('a user connected');
+
+	socket.on('disconnect', function() { // On Disconnect
+		console.log('user has disconnected');
+	});
+
+	socket.on('comment message', function(data) {
+		var newComment = createCommentRow(data);
+		io.emit('comment message', newComment);
+	});
+	
+});
+
 // Session
 var sessionOption = session(config.session);
 app.use(sessionOption);
@@ -28,7 +61,6 @@ app.use(express.static('public'));
 // middleware application
 var checkAuth = function(req, res, next) {
 	if (req.session.authUser) {
-		// userID = req.session.authUser.id;
 		next();
 	} else {
 		res.redirect('/auth/login');
@@ -77,7 +109,7 @@ app.get('/', function (req, res) {
 	res.render('pages/landing/index');
 });
 
-app.listen(3000, function() {
+http.listen(3000, function() {
 	console.log('Example app listening on port 3000!');
 });
 
