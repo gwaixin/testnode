@@ -60,7 +60,7 @@ $(document).on('click', '.edit-book', function() {
 	var rowBook = $("tr[data-book-row='"+id+"']");
 	var book = {
 		id: rowBook.find('.book-row-id').html(),
-		title: rowBook.find('.book-row-title').html(),
+		title: rowBook.find('.book-row-title p').html(),
 		description: rowBook.find('.book-row-description').html(),
 		author: rowBook.find('.book-row-author').html(),
 		quantity: rowBook.find('.book-row-quantity').html()
