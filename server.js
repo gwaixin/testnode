@@ -5,6 +5,7 @@ var session = require('express-session');
 
 var app = express();
 
+// Setup socketio
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
@@ -24,16 +25,17 @@ var createCommentRow = function(data) {
 	return comment;
 };
 
+var ioRoom = '';
 io.on('connection', function(socket) {
 	console.log('a user connected');
-
+	socket.join(ioRoom);
 	socket.on('disconnect', function() { // On Disconnect
 		console.log('user has disconnected');
 	});
 
 	socket.on('comment message', function(data) {
 		var newComment = createCommentRow(data);
-		io.emit('comment message', newComment);
+		io.to(data.ioRoom).emit('comment message', newComment);
 	});
 	
 });
@@ -69,6 +71,10 @@ var checkAuth = function(req, res, next) {
 
 app.use('/user/', checkAuth);
 app.use('/books/', checkAuth);
+app.use('/books/:id', function(req, res, next) {
+	ioRoom = 'book' + req.params.id;
+	next();
+});
 
 // Handling erros
 function logErros(err, req, res, next) {
