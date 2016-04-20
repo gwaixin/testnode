@@ -105,10 +105,30 @@ router.delete('/:id', function(req, res) {
 	});
 });
 
+// Define view detail
+router.get('/:id', function(req, res, next) {
+	var id = req.params.id;
+	if (isNaN(id)) {
+		next();
+	} else {
+		models.Book.find({
+			where: {
+				id: id
+			}
+		}).then(function(book) {
+			if (book) {
+				res.render('pages/books/detail', {book:book});
+			} else {
+				res.send('No book found');
+			}
+		});
+	}
+});
+
 
 function createRow(bookData) {
 	var strRow = "<td class='book-row-id'>"+bookData.id+"</td>"+
-								"<td class='book-row-title'>"+bookData.title+"</td>" +
+								"<td class='book-row-title'><a href='/books/"+bookData.id+"'><p>"+bookData.title+"</p></a></td>" +
 								"<td class='book-row-description'>"+bookData.description+"</td>" + 
 								"<td class='book-row-author'>"+bookData.author+"</td>" +
 								"<td class='book-row-quantity'>"+bookData.quantity+"</td>" +
