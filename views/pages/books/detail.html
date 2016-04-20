@@ -26,8 +26,40 @@
 			<div class="col-lg-12">
 				<a href="/books">Go back to books</a>
 			</div>
+			<div class="col-lg-12">
+				<h3>Comments</h3>
+				<div class="row">
+					<div class="col-md-10">
+						<textarea class="form-control" id="comment-text" cols="30" rows="2" placeholder="Place your comment here"></textarea>
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-primary btn-lg col-lg-12" id="send-comment">Send Comment</button>
+						<input type="hidden" id="user-id" value="<%=user.id%>" />
+						<input type="hidden" id="user-name" value="<%=user.first_name%>" />
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-md-12" id="comments">
+						<!-- <div class='row comment-row'>
+							<div class="col-md-12">
+								<h5>Name</h5>
+							</div>
+							<div class="col-md-2">
+								<img src="http://placehold.it/120x50" alt="">
+							</div>
+							<div class="col-md-10">
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore nihil accusantium repellat non architecto tenetur sequi enim officiis expedita corrupti distinctio harum debitis id blanditiis quasi vitae explicabo, molestias atque.</p>
+								<small class="pull-right"><%= Date %></small>
+							</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<% include ../../partials/footer %>
+	<script type="text/javascript" src="/js/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/js/pages/books/detail.js"></script>
 </body>
 </html>
