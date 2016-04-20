@@ -117,7 +117,8 @@ router.get('/:id', function(req, res, next) {
 			}
 		}).then(function(book) {
 			if (book) {
-				res.render('pages/books/detail', {book:book});
+				// res.send(req.session.authUser);
+				res.render('pages/books/detail', {book:book, user:req.session.authUser});
 			} else {
 				res.send('No book found');
 			}
