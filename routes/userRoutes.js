@@ -22,6 +22,15 @@ var uploading = multer({storage:storage});
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
+// middleware for session
+router.use(function(req, res, next) {
+	if (req.session.authToken) {
+		next();
+	} else {
+		res.redirect('/auth/login');
+	}
+});
+
 router.get('/profile', function(req, res) {
 	models.User.find({
 		where: {

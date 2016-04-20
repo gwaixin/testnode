@@ -5,8 +5,12 @@ var models = require('../server/models/');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.use(function timeLog (req, res, next) {
-	next();
+router.use(function(req, res, next) {
+	if (req.session.authToken) {
+		next();
+	} else {
+		res.redirect('/auth/login');
+	}
 });
 
 // define the home page route
