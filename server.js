@@ -2,27 +2,39 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var config = require('./config');
 var session = require('express-session');
-
+var model = require('./server/models/');
 var app = express();
 
 // Setup socketio
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var createCommentRow = function(data) {
-	var comment = "<div class='row comment-row'>" +
-		"<div class='col-md-12'>" +
-			"<h5>"+ data.firstname +"</h5>" +
-		"</div>" +
-		"<div class='col-md-2'>" +
-			"<img src='http://placehold.it/120x50' alt=''>" +
-		"</div>" +
-		"<div class='col-md-10'>" +
-			"<p>"+ data.message +"</p>"+
-			"<small class='pull-right'>"+ new Date +"</small>" +
-		"</div>" +
-	"</div>";
-	return comment;
+function createCommentRow(data) {
+	model.BookComment.create({
+		comment: data.message,
+		user_id: data.userid,
+		book_id: data.bookid,
+		status: true,
+	}).then(function(bookComment) {
+		var dataResult = {result: false, message: ''};
+		if (bookComment) {
+			dataResult.result = true;
+			dataResult.message = "<div class='row comment-row'>" +
+				"<div class='col-md-12'>" +
+					"<h5>"+ data.firstname + "<small class='pull-right'>"+ new Date +"</small></h5>" +
+				"</div>" +
+				"<div class='col-md-2'>" +
+					"<img src='http://placehold.it/120x50' alt=''>" +
+				"</div>" +
+				"<div class='col-md-10'>" +
+					"<p>"+ data.message +"</p>"+
+				"</div>" +
+			"</div>";
+		} else {
+			dataResult.message = 'Internal Server Error';
+		}
+		io.to(data.ioRoom).emit('comment message', dataResult);
+	});
 };
 
 var ioRoom = '';
@@ -34,8 +46,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('comment message', function(data) {
-		var newComment = createCommentRow(data);
-		io.to(data.ioRoom).emit('comment message', newComment);
+		createCommentRow(data);
 	});
 	
 });
@@ -72,7 +83,7 @@ var checkAuth = function(req, res, next) {
 app.use('/user/', checkAuth);
 app.use('/books/', checkAuth);
 app.use('/books/:id', function(req, res, next) {
-	ioRoom = 'book' + req.params.id;
+	ioRoom = 'book+' + req.params.id;
 	next();
 });
 
