@@ -2,18 +2,25 @@ var express = require('express');
 var authRoute = express.Router();
 var bodyParser = require('body-parser');
 var models = require('../server/models/');
-var jwt    = require('jsonwebtoken');
-var session = require('express-session');
-var config = require('../config');
+var console = require('../config');
 
 authRoute.use(bodyParser.urlencoded({ extended: true }));
 
+// Middleware for alreadyLogin
+var isLogin = function(req, res, next) {
+	if (req.session.authUser) {
+		res.redirect('/books/');
+	} else {
+		next();
+	}
+}
+
 //auth login
-authRoute.get('/login', function(req, res) {
+authRoute.get('/login', isLogin, function(req, res) {
 		res.render('pages/auth/login');
 });
 
-authRoute.post('/login', function(req, res) {
+authRoute.post('/login', isLogin, function(req, res) {
 		models.User.find({
 			where: {
 				username: req.body.username,
@@ -22,10 +29,8 @@ authRoute.post('/login', function(req, res) {
 		}).then(function(user) {
 			var data = {};
 			if (user) {
-				var token = jwt.sign(JSON.stringify(user), 'testing lang', { expiresIn: '60'});
-				req.session.authToken = token;
-				console.log(req.session.authToken);
-				data = {result:true, token: token};
+				req.session.authUser = user;
+				data = {result:true};
 			} else {
 				data = {result:false};
 			}
@@ -35,11 +40,11 @@ authRoute.post('/login', function(req, res) {
 
 
 // auth register
-authRoute.get('/register', function(req, res) {
+authRoute.get('/register', isLogin, function(req, res) {
 	res.render('pages/auth/register');
 });
 
-authRoute.post('/register', function(req, res) {
+authRoute.post('/register', isLogin, function(req, res) {
 	models.User.create({
 		username: req.body.username,
 		password: req.body.password,
@@ -53,7 +58,7 @@ authRoute.post('/register', function(req, res) {
 
 // Logout
 authRoute.get('/logout', function(req, res) {
-	req.session.authToken = null;
+	req.session.authUser = null;
 	res.render('pages/auth/logout');
 });
 

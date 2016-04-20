@@ -5,13 +5,7 @@ var models = require('../server/models/');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.use(function(req, res, next) {
-	if (req.session.authToken) {
-		next();
-	} else {
-		res.redirect('/auth/login');
-	}
-});
+// router.use();
 
 // define the home page route
 router.get('/', function(req, res) {
@@ -34,7 +28,8 @@ router.post('/save', function(req, res) {
 		// update
 		models.Book.find({
 			where: {
-				id: data.id
+				id: data.id,
+				user_id: req.session.authUser.id
 			}
 		}).then(function(book) {
 			if (book) { // Checks whether book id found our not
@@ -66,7 +61,7 @@ router.post('/save', function(req, res) {
 			description: data.description,
 			author: data.author,
 			quantity: data.quantity,
-			user_id: 1 // static as of now
+			user_id: req.session.authUser.id // static as of now
 		}).then(function(result) {
 			if (result) {
 				res.json({
@@ -90,7 +85,8 @@ router.post('/save', function(req, res) {
 router.delete('/:id', function(req, res) {
 	models.Book.destroy({
 		where: {
-			id: req.params.id
+			id: req.params.id,
+			user_id: req.session.authUser.id
 		}
 	}).then(function(book) {
 		if (book) {

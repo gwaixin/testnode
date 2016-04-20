@@ -15,15 +15,6 @@ var books = require('./routes/bookRoutes');
 var auths = require('./routes/authRoutes');
 var user = require('./routes/userRoutes');
 
-app.set('superSecret', config.secret);
-
-app.use('/books', books);
-app.use('/auth', auths);
-app.use('/user', user);
-
-// Database
-// var userDB = require('./models');
-
 // for templates
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
@@ -35,33 +26,23 @@ app.use(express.static('public'));
 
 
 // middleware application
-// app.use('/user/:id', function(req, res, next) {
-//   console.log('Request URL:', req.originalUrl);
-//   next();
-// }, function (req, res, next) {
-//   console.log('Request Type:', req.method);
-//   next();
-// });
+var checkAuth = function(req, res, next) {
+	if (req.session.authUser) {
+		// userID = req.session.authUser.id;
+		next();
+	} else {
+		res.redirect('/auth/login');
+	}
+};
 
-// app.get('/user/:id', function(req, res, next) {
-// 		console.log('Request Type:', req.method);
-// 		res.send('USER');
-// });
-
-
-
-app.get('/', function (req, res) {
-	var response = 'Hello ';
-	res.render('pages/landing/index');
-	// res.send(response + ' ' + req.requestTime2);
-});
+app.use('/user/', checkAuth);
+app.use('/books/', checkAuth);
 
 // Handling erros
 function logErros(err, req, res, next) {
 	console.error(err.stack);
 	next(err);
 }
-
 function clientErrorHandler(err, req, res, next) {
 	if (req.xhr) {
 		res.status(500).send({error: 'Something failed'});
@@ -69,12 +50,10 @@ function clientErrorHandler(err, req, res, next) {
 		next(err);
 	}
 }
-
 function errorHandler(err, req, res, next) {
 	res.status(500);
 	res.render('error', {error: err});
 }
-
 app.use(logErros);
 app.use(clientErrorHandler);
 app.use(errorHandler);
@@ -88,18 +67,15 @@ global.authorName = 'Nichole John Martinez';
 global.authorContact = 'xinmartinez@gmail.com';
 
 
-// app session ini
-var sessionOption = session({
-	genid: function(req) {
-		return genuuid();
-	},
-	secret: 'mybook12345',
-	cookie: {maxAge: 60000},
-	resave: true,
-	saveUninitialized: true
-});
-app.use(sessionOption);
+// use other routes
+app.use('/books', books);
+app.use('/auth', auths);
+app.use('/user', user);
 
+app.get('/', function (req, res) {
+	var response = 'Hello ';
+	res.render('pages/landing/index');
+});
 
 app.listen(3000, function() {
 	console.log('Example app listening on port 3000!');
