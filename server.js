@@ -71,6 +71,13 @@ app.use(clientErrorHandler);
 app.use(errorHandler);
 
 
+// Set local variables // can be access to views
+global.siteTitle = 'MyBook';
+global.siteDescription = 'A portal for the collection of your books';
+global.siteCopy = 'Copyright © '+siteTitle+' 2015';
+global.authorName = 'Nichole John Martinez';
+global.authorContact = 'xinmartinez@gmail.com';
+
 app.listen(3000, function() {
 	console.log('Example app listening on port 3000!');
 });
